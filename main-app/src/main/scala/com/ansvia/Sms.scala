@@ -1,5 +1,7 @@
 package com.ansvia
 
+import scala.util.parsing.json.JSON
+
 /**
  * Author: robin
  * Date: 5/4/13
@@ -48,7 +50,20 @@ object Sms {
     Sms(ar(3), status, ar(1), ar(0), message)
   }
   def parseJson(text:String):Option[Sms] = {
-
+    val result = JSON.parseFull(text)
+    result match {
+      case Some(d:Map[String, String]) =>
+        Some(Sms(d.getOrElse("fromNumber", ""),
+          d.getOrElse("status", "") match {
+            case "Unread" => SmsStatus.Unread
+            case "Read" => SmsStatus.Read
+          }, d.getOrElse("sent", ""),
+          d.getOrElse("smsc", ""),
+          d.getOrElse("message", "")
+        ))
+      case None =>
+        None
+    }
   }
   def convertToJson(sms:Sms):String = {
     """{
