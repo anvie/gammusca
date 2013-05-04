@@ -32,6 +32,7 @@ class SmsSpec extends Specification {
                          |2 SMS parts in 2 SMS sequences""".stripMargin
     def parseText = {
       val s = Sms("+6285717997788", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
+//      println("s: " + s)
       Sms.parseText(text) must beEqualTo(s)
     }
   }

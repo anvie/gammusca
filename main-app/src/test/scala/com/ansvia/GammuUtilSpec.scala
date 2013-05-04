@@ -54,8 +54,8 @@ class GammuUtilSpec extends Specification {
       val s = GammuUtil.smsesSplit(data)
       println(s)
       (s.length must beEqualTo(2)) and
-        (s(0).startsWith("Location 1") must beTrue) and
-        (s(0).startsWith("Location 2") must beTrue)
+        (s(0).startsWith("SMS message") must beTrue) and
+        (s(0).startsWith("SMS message") must beTrue)
     }
   }
 
