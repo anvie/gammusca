@@ -16,7 +16,7 @@ case class Sms(fromNumber:String, toNumber:String, status:SmsStatus, sent:String
 
 
 object Sms {
-  def parseText(text:String):Sms = {
+  def parseText(text:String):Option[Sms] = {
     var ar = List.empty[String]
     val sd = text.split("\n")
     sd slice (0, 6) foreach { line =>
@@ -30,6 +30,9 @@ object Sms {
       }
     }
     val sdIter = sd.toIterator
+    if (sd.length == 1)
+      return None
+
     sdIter.next()
     sdIter.next()
     sdIter.next()
@@ -49,7 +52,7 @@ object Sms {
       case "UnRead" => SmsStatus.Unread
       case "Read" => SmsStatus.Read
     }
-    Sms(ar(3), "", status, ar(1), ar(0), message)
+    Some(Sms(ar(3), "", status, ar(1), ar(0), message))
   }
   def parseJson(text:String):Option[Sms] = {
     val result = JSON.parseFull(text)

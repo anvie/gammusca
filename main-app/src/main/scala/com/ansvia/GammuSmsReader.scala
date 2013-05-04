@@ -1,16 +1,21 @@
 package com.ansvia
 
+import com.ansvia.commons.logging.Slf4jLogger
+
 /**
  * Author: robin
  * Date: 5/4/13
  * Time: 10:39 PM
  *
  */
-trait GammuSmsReader extends ShellHelper {
+trait GammuSmsReader extends ShellHelper with Slf4jLogger {
+
+  protected var lastPullSmsCount = 0
+  var gammuBin = "/usr/bin/gammu"
 
   def pullRaw():String = {
     try {
-      exec("/usr/bin/gammu","getallsms")
+      exec(gammuBin,"getallsms")
     }catch{
       case e:Exception =>
         e.printStackTrace()
@@ -29,8 +34,23 @@ trait GammuSmsReader extends ShellHelper {
   }
 
   def pull():List[Sms] = {
-    pullAsString() map { str =>
+    val smsSeq = pullAsString()
+    val rv = smsSeq flatMap { str =>
       Sms.parseText(str)
+    }
+    lastPullSmsCount = rv.length
+    debug("lastPullSmsCount: " + lastPullSmsCount)
+    rv
+  }
+
+  def deleteAllSms(){
+    try {
+      exec(gammuBin, "deleteallsms", "1")
+    }catch{
+      case e:Exception =>
+        e.printStackTrace()
+        println(e.getMessage)
+        ""
     }
   }
 }

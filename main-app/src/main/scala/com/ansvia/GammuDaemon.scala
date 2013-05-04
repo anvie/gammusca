@@ -27,8 +27,12 @@ class GammuDaemon extends Thread with Gammu with Slf4jLogger {
           backend.push(sms, Folder.Inbox)
       }
 
+      if (lastPullSmsCount >= 10){
+        // clear up sim inbox memory
+        deleteAllSms()
+      }
 
-      Thread.sleep(5000)
+      Thread.sleep(10000)
     }
   }
 
