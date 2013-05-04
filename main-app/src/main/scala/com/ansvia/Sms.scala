@@ -8,8 +8,8 @@ import scala.util.parsing.json.JSON
  * Time: 10:38 PM
  *
  */
-case class Sms(fromNumber:String, status:SmsStatus, sent:String, smsc:String, message:String) {
-  override def hashCode() = (fromNumber + sent + smsc + message).hashCode
+case class Sms(fromNumber:String, toNumber:String, status:SmsStatus, sent:String, smsc:String, message:String) {
+  override def hashCode() = (fromNumber + toNumber + sent + smsc + message).hashCode
 
   def toJson = Sms.convertToJson(this)
 }
@@ -49,13 +49,14 @@ object Sms {
       case "UnRead" => SmsStatus.Unread
       case "Read" => SmsStatus.Read
     }
-    Sms(ar(3), status, ar(1), ar(0), message)
+    Sms(ar(3), "", status, ar(1), ar(0), message)
   }
   def parseJson(text:String):Option[Sms] = {
     val result = JSON.parseFull(text)
     result match {
       case Some(d:Map[String, String]) =>
         Some(Sms(d.getOrElse("fromNumber", ""),
+          d.getOrElse("toNumber", ""),
           d.getOrElse("status", "") match {
             case "Unread" => SmsStatus.Unread
             case "Read" => SmsStatus.Read

@@ -42,7 +42,7 @@ class GammuUtilSpec extends Specification {
                  |SMSC number          : "+62816124"
                  |Sent                 : Sat 04 May 2013 07:13:16 PM  +0700
                  |Coding               : Default GSM alphabet (no compression)
-                 |Remote number        : "+6285717997788"
+                 |Remote number        : "+6285717997711"
                  |Status               : UnRead
                  |
                  |1 200, 2 350, 3 105,rusak 10
