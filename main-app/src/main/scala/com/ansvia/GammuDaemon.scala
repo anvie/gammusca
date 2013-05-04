@@ -37,7 +37,7 @@ class GammuDaemon extends Thread with Gammu with Slf4jLogger {
 
 trait GammuStorageBackend {
   def push(sms:Sms, folder:Folder)
-  def pop(folder:Folder):Sms
+  def pop(folder:Folder):Option[Sms]
 }
 
 trait Folder

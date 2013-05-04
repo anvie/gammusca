@@ -15,6 +15,7 @@ class SmsSpec extends Specification {
       "Sms should" ^
       p ^
         "parse text" ! trees.parseText ^
+        "parse json" ! trees.parseJson ^
     end
 
   object trees {
@@ -22,7 +23,7 @@ class SmsSpec extends Specification {
                          |SMSC number          : "+62816124"
                          |Sent                 : Sat 04 May 2013 07:13:16 PM  +0700
                          |Coding               : Default GSM alphabet (no compression)
-                         |Remote number        : "+6285717997788"
+                         |Remote number        : "+6285717997711"
                          |Status               : UnRead
                          |
                          |1 200, 2 350, 3 105,rusak 10
@@ -30,10 +31,26 @@ class SmsSpec extends Specification {
                          |
                          |
                          |2 SMS parts in 2 SMS sequences""".stripMargin
+    private val jsonText =
+      """
+        |{
+        |"fromNumber": "+6285717997711",
+        |"status": "Unread",
+        |"sent": "Sat 04 May 2013 07:13:16 PM  +0700",
+        |"smsc": "+62816124",
+        |"message": "1 200, 2 350, 3 105,rusak 10"
+        |}
+      """.stripMargin
+
     def parseText = {
-      val s = Sms("+6285717997788", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
-//      println("s: " + s)
+      val s = Sms("+6285717997711", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
       Sms.parseText(text) must beEqualTo(s)
     }
+
+    def parseJson = {
+      val s = Sms("+6285717997711", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
+      Sms.parseJson(jsonText) must beEqualTo(Some(s))
+    }
+
   }
 }
