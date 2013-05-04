@@ -24,16 +24,22 @@ trait ShellHelper {
 
 }
 
-case class Sms(fromNumber:String, status:SmsStatus, sent:String, smsc:String, message:String)
+case class Sms(fromNumber:String, status:SmsStatus, sent:String, smsc:String, message:String) {
+  override def hashCode() = (fromNumber + sent + smsc + message).hashCode
+}
 
 object Sms {
   def parseText(text:String):Sms = {
-    var ar = Array.empty[String]
+    var ar = List.empty[String]
     val sd = text.split("\n")
-    sd slice (0, 4) foreach { line =>
+    sd slice (0, 6) foreach { line =>
       val d = line.split(":")
       if (d.length > 1){
-        ar +:= d(1).trim
+        if (d.length > 2){
+          ar :+= d.slice(1,d.length).reduceLeftOption(_ + ":" + _).getOrElse("").trim.replaceAll("""^"+|"+$""", "").trim
+        }else{
+          ar :+= d(1).trim.replaceAll("""^"+|"+$""", "").trim
+        }
       }
     }
     val sdIter = sd.toIterator
@@ -42,14 +48,16 @@ object Sms {
     sdIter.next()
     sdIter.next()
     sdIter.next()
+    sdIter.next()
     var messages = Array.empty[String]
     while(sdIter.hasNext){
-      val t = sdIter.next()
-      if ( !("""\d+ SMS parts in \d+ SMS sequences""".r.pattern.matcher(t).matches()) ){
-        messages +:= t.trim + "\n"
+      val t = sdIter.next().trim
+      if ( !("""\d+ SMS parts in \d+ SMS sequences""".r.pattern.matcher(t).matches()) && t.length > 0 ){
+        messages +:= t + " "
       }
     }
-    val message = messages.reduceLeftOption(_ + _).getOrElse("")
+    val message = messages.reduceLeftOption(_ + _).getOrElse("").trim
+    println(ar)
     val status = ar(4) match {
       case "UnRead" => SmsStatus.Unread
       case "Read" => SmsStatus.Read
@@ -88,7 +96,7 @@ trait GammuSmsReader extends ShellHelper {
 
   def pull():List[Sms] = {
     pullAsString() map { str =>
-
+      Sms.parseText(str)
     }
   }
 }
