@@ -27,7 +27,14 @@ trait ShellHelper {
 trait GammuSmsReader extends ShellHelper {
 
   def pull():String = {
-    exec("gammu","getallsms")
+    try {
+      exec("gammu","getallsms")
+    }catch{
+      case e:Exception =>
+        e.printStackTrace()
+        println(e.getMessage)
+        ""
+    }
   }
 }
 
@@ -55,15 +62,16 @@ trait GammuSmsWriter extends ShellHelper {
   def send(phoneNumber:String, msg:String){
     val nn = normalizeNumber(phoneNumber)
     validateNumber(nn)
-    validateMsg(msg)
+    val nmsg = msg.trim
+    validateMsg(nmsg)
 
-    exec("gammu", "sendsms", "TEXT", nn, "-text", msg)
+    exec("gammu", "sendsms", "TEXT", nn, "-text", nmsg)
   }
 }
 trait Gammu extends GammuSmsReader with GammuSmsWriter
 
 
-class GammuDaemon extends Thread with Slf4jLogger {
+class GammuDaemon extends Thread with Gammu with Slf4jLogger {
 
   private var _stop = false
 
@@ -73,6 +81,7 @@ class GammuDaemon extends Thread with Slf4jLogger {
 
       info("reading smses from device...")
 
+      val data = pull()
 
 
       Thread.sleep(1000)
