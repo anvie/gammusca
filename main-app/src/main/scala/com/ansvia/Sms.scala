@@ -10,6 +10,8 @@ import scala.util.parsing.json.JSON
  */
 case class Sms(fromNumber:String, status:SmsStatus, sent:String, smsc:String, message:String) {
   override def hashCode() = (fromNumber + sent + smsc + message).hashCode
+
+  def toJson = Sms.convertToJson(this)
 }
 
 
@@ -76,7 +78,7 @@ object Sms {
     """.stripMargin.format(sms.fromNumber, (sms.status match {
       case SmsStatus.Read => "Read"
       case SmsStatus.Unread => "Unread"
-    }),sms.sent, sms.smsc, sms.message)
+    }),sms.sent, sms.smsc, sms.message).trim
   }
 }
 

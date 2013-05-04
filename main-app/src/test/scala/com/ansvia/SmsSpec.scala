@@ -16,6 +16,7 @@ class SmsSpec extends Specification {
       p ^
         "parse text" ! trees.parseText ^
         "parse json" ! trees.parseJson ^
+        "serialize to json" ! trees.toJson ^
     end
 
   object trees {
@@ -50,6 +51,12 @@ class SmsSpec extends Specification {
     def parseJson = {
       val s = Sms("+6285717997711", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
       Sms.parseJson(jsonText) must beEqualTo(Some(s))
+    }
+
+    def toJson = {
+      val s = Sms("+6285717997711", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700",
+        "+62816124", "1 200, 2 350, 3 105,rusak 10").toJson
+      s must beEqualTo(jsonText.trim)
     }
 
   }
