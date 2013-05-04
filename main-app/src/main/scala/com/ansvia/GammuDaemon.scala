@@ -25,7 +25,7 @@ class GammuDaemon extends Thread with Gammu with Slf4jLogger {
       }
 
 
-      Thread.sleep(1000)
+      Thread.sleep(5000)
     }
   }
 

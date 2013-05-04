@@ -8,8 +8,10 @@ object Gammusca {
 
     def main(args:Array[String]){
 
+      val daemon = new GammuDaemon()
+      daemon.start()
 
-
+      daemon.join()
     }
 
 }

@@ -10,7 +10,7 @@ trait GammuSmsReader extends ShellHelper {
 
   def pullRaw():String = {
     try {
-      exec("gammu","getallsms")
+      exec("/usr/bin/gammu","getallsms")
     }catch{
       case e:Exception =>
         e.printStackTrace()
