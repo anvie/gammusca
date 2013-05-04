@@ -8,10 +8,20 @@ object Gammusca {
 
     def main(args:Array[String]){
 
-      val daemon = new GammuDaemon()
-      daemon.start()
+      val daemonSender = new GammuDaemonSender()
+      val daemonPuller = new GammuDaemonFetcher(){
+        override def reply(fromNumber: String, str: String) {
+          daemonSender.sendSms(fromNumber, str)
+        }
+      }
 
-      daemon.join()
+
+      daemonPuller.start()
+      daemonSender.start()
+
+      daemonPuller.join()
+      daemonSender.join()
+
     }
 
 }

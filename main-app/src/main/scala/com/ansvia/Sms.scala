@@ -74,12 +74,13 @@ object Sms {
   def convertToJson(sms:Sms):String = {
     """{
       |"fromNumber": "%s",
+      |"toNumber": "%s",
       |"status": "%s",
       |"sent": "%s",
       |"smsc": "%s",
       |"message": "%s"
       |}
-    """.stripMargin.format(sms.fromNumber, (sms.status match {
+    """.stripMargin.format(sms.fromNumber, sms.toNumber, (sms.status match {
       case SmsStatus.Read => "Read"
       case SmsStatus.Unread => "Unread"
     }),sms.sent, sms.smsc, sms.message).trim
