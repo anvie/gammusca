@@ -24,9 +24,49 @@ trait ShellHelper {
 
 }
 
+case class Sms(fromNumber:String, status:SmsStatus, sent:String, smsc:String, message:String)
+
+object Sms {
+  def parseText(text:String):Sms = {
+    var ar = Array.empty[String]
+    val sd = text.split("\n")
+    sd slice (0, 4) foreach { line =>
+      val d = line.split(":")
+      if (d.length > 1){
+        ar +:= d(1).trim
+      }
+    }
+    val sdIter = sd.toIterator
+    sdIter.next()
+    sdIter.next()
+    sdIter.next()
+    sdIter.next()
+    sdIter.next()
+    var messages = Array.empty[String]
+    while(sdIter.hasNext){
+      val t = sdIter.next()
+      if ( !("""\d+ SMS parts in \d+ SMS sequences""".r.pattern.matcher(t).matches()) ){
+        messages +:= t.trim + "\n"
+      }
+    }
+    val message = messages.reduceLeftOption(_ + _).getOrElse("")
+    val status = ar(4) match {
+      case "UnRead" => SmsStatus.Unread
+      case "Read" => SmsStatus.Read
+    }
+    Sms(ar(3), status, ar(1), ar(0), message)
+  }
+}
+
+trait SmsStatus
+object SmsStatus {
+  object Unread extends SmsStatus
+  object Read extends SmsStatus
+}
+
 trait GammuSmsReader extends ShellHelper {
 
-  def pull():String = {
+  def pullRaw():String = {
     try {
       exec("gammu","getallsms")
     }catch{
@@ -35,6 +75,27 @@ trait GammuSmsReader extends ShellHelper {
         println(e.getMessage)
         ""
     }
+  }
+
+  def pullAsString():List[String] = {
+    val data = pullRaw().trim
+    if (data.length > 0){
+      GammuUtil.smsesSplit(data)
+    }else{
+      List.empty[String]
+    }
+  }
+
+  def pull():List[Sms] = {
+    pullAsString() map { str =>
+
+    }
+  }
+}
+
+object GammuUtil {
+  def smsesSplit(text:String):List[String] = {
+    text.split("""Location \d+, folder "Inbox", SIM memory, Inbox folder""").toList.map(_.trim).filter(_.length > 1)
   }
 }
 
@@ -81,7 +142,7 @@ class GammuDaemon extends Thread with Gammu with Slf4jLogger {
 
       info("reading smses from device...")
 
-      val data = pull()
+      val data = pullRaw()
 
 
       Thread.sleep(1000)
