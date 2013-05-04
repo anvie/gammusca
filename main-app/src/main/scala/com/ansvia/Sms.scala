@@ -47,5 +47,21 @@ object Sms {
     }
     Sms(ar(3), status, ar(1), ar(0), message)
   }
+  def parseJson(text:String):Option[Sms] = {
+
+  }
+  def convertToJson(sms:Sms):String = {
+    """{
+      |"fromNumber": "%s",
+      |"status": "%s",
+      |"sent": "%s",
+      |"smsc": "%s",
+      |"message": "%s"
+      |}
+    """.stripMargin.format(sms.fromNumber, (sms.status match {
+      case SmsStatus.Read => "Read"
+      case SmsStatus.Unread => "Unread"
+    }),sms.sent, sms.smsc, sms.message)
+  }
 }
 
