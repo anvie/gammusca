@@ -11,10 +11,12 @@ import com.redis.RedisClient
  */
 class GammuDaemonFetcher extends Thread with Gammu with Slf4jLogger {
 
-  private lazy val backend = new GammuRedisStorage("localhost", 6379)
+  protected lazy val backend = new GammuRedisStorage("localhost", 6379)
   private var _stop = false
 
   override def run() {
+
+    var emptyCount = 0
 
     while (!_stop){
 
@@ -22,14 +24,19 @@ class GammuDaemonFetcher extends Thread with Gammu with Slf4jLogger {
 
       // dapatkan data dari sim card
       // lalu masukkan ke storage
-      pull() foreach { sms =>
+      val smses = pull()
+      if (smses.length == 0)
+        emptyCount += 1
+      else
+        emptyCount = 0
+      smses foreach { sms =>
         if (sms.status != SmsStatus.Read){ // hanya untuk sms yang belum pernah dibaca.
           backend.push(sms, Folder.Inbox)
           reply(sms.fromNumber,"sms diterima, panjang karakter: " + sms.message.length)
         }
       }
 
-      if (lastPullSmsCount >= 10){
+      if (lastPullSmsCount >= 20 && emptyCount > 5){
         // clear up sim inbox memory
         debug("cleaning up sim memory, sms count: " + lastPullSmsCount)
         deleteAllSms()
@@ -48,7 +55,7 @@ class GammuDaemonFetcher extends Thread with Gammu with Slf4jLogger {
 
 class GammuDaemonSender extends Thread with GammuSmsWriter with Slf4jLogger {
 
-  private lazy val backend = new GammuRedisStorage("localhost", 6379)
+  protected lazy val backend = new GammuRedisStorage("localhost", 6379)
   private var _stop = false
 
   override def run() {
@@ -89,6 +96,7 @@ trait Folder
 object Folder {
   object Inbox extends Folder
   object Outbox extends Folder
+  object Draft extends Folder
 }
 
 class GammuRedisStorage(host:String, port:Int) extends GammuStorageBackend with Slf4jLogger {
@@ -106,6 +114,10 @@ class GammuRedisStorage(host:String, port:Int) extends GammuStorageBackend with 
         rc.lrange('gammu_outbox, 0, -1).map { lst =>
           lst.contains(Some(sms.toJson))
         }.getOrElse(false)
+      case Folder.Draft =>
+        rc.lrange('gammu_draft, 0, -1).map { lst =>
+          lst.contains(Some(sms.toJson))
+        }.getOrElse(false)
     }
   }
 
@@ -116,6 +128,7 @@ class GammuRedisStorage(host:String, port:Int) extends GammuStorageBackend with 
       val key = folder match {
         case Folder.Inbox => 'gammu_inbox
         case Folder.Outbox => 'gammu_outbox
+        case Folder.Draft => 'gammu_draft
       }
       rc.rpush(key, sms.toJson)
     }
@@ -128,6 +141,8 @@ class GammuRedisStorage(host:String, port:Int) extends GammuStorageBackend with 
         rc.lpop('gammu_inbox).flatMap(Sms.parseJson)
       case Folder.Outbox =>
         rc.lpop('gammu_outbox).flatMap(Sms.parseJson)
+      case Folder.Draft =>
+        rc.lpop('gammu_draft).flatMap(Sms.parseJson)
     }
   }
 

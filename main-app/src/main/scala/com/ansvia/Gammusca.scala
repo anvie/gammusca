@@ -8,6 +8,9 @@ object Gammusca {
 
     def main(args:Array[String]){
 
+      println("Preparing...")
+      Thread.sleep(20000)
+
       val daemonSender = new GammuDaemonSender()
       val daemonPuller = new GammuDaemonFetcher(){
         override def reply(fromNumber: String, str: String) {

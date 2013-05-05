@@ -7,6 +7,12 @@ package com.ansvia
  *
  */
 trait GammuSmsWriter extends ShellHelper {
+
+  protected val backend:GammuStorageBackend
+
+  protected def error(str:String)
+  protected def info(str:String)
+
   def normalizeNumber(number:String):String = {
     if (number.startsWith("0"))
       "+62" + number.substring(1)
@@ -30,9 +36,21 @@ trait GammuSmsWriter extends ShellHelper {
   def send(phoneNumber:String, msg:String){
     val nn = normalizeNumber(phoneNumber)
     validateNumber(nn)
-    val nmsg = msg.trim
+    val nmsg = if (msg.length > 160)
+      msg.substring(0, 160).trim
+    else
+      msg.trim
     validateMsg(nmsg)
 
-    exec("gammu", "sendsms", "TEXT", nn, "-text", nmsg)
+    try {
+      exec("gammu", "sendsms", "TEXT", nn, "-len", "160", "-text", nmsg)
+    }catch{
+      case e:Exception =>
+        error("Gagal kirim sms ke: " + phoneNumber + ", pesan: " + nmsg)
+        e.printStackTrace()
+        // backup sms to draft
+        info("backup last failed to send sms into Draft")
+        backend.push(Sms("",phoneNumber,SmsStatus.Unread,"","",nmsg), Folder.Draft)
+    }
   }
 }
