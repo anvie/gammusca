@@ -22,6 +22,7 @@ trait GammuSmsWriter extends ShellHelper {
     else
       number
   }
+
   def validateNumber(number:String){
     if (!number.startsWith("+"))
       throw new Exception("Invalid phone number " + number + ", should starts with +, eg: +6281234...")
@@ -30,12 +31,14 @@ trait GammuSmsWriter extends ShellHelper {
     if (number.length > 40)
       throw new Exception("Invalid phone number, more than 40 digit")
   }
+
   def validateMsg(msg:String){
     if (msg.length < 1)
       throw new Exception("Invalid message, less than 1 characters.")
     if (msg.length > 160)
       throw new Exception("Invalid message, more than 160 characters.")
   }
+
   def send(phoneNumber:String, msg:String){
     val nn = normalizeNumber(phoneNumber)
     validateNumber(nn)

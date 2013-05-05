@@ -26,10 +26,11 @@ class GammuDaemonFetcher extends Thread with Gammu with Slf4jLogger {
       // dapatkan data dari sim card
       // lalu masukkan ke storage
       val smses = pull()
-      if (smses.length == 0)
+      if (smses.filter(_.status == SmsStatus.Unread).length == 0)
         emptyCount += 1
       else
         emptyCount = 0
+
       smses foreach { sms =>
         if (sms.status != SmsStatus.Read){ // hanya untuk sms yang belum pernah dibaca.
           backend.push(sms, Folder.Inbox)
