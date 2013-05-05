@@ -24,6 +24,7 @@ object Build extends Build {
 
 	lazy val mainapp = Project("gammusca", file("main-app"))
 		.settings(moduleSettings: _*)
+    .settings(withPublishing: _*)
 		.settings(libraryDependencies ++=
 			compile(ansviaCommons, scalaRedis) ++
 			test(specs2) ++

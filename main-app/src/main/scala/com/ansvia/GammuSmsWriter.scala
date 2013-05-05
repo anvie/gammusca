@@ -16,14 +16,6 @@ trait GammuSmsWriter extends ShellHelper {
   protected def info(str:String)
 
 
-//  override def exec(cmds: String*) = {
-//    synchronized {
-//      val rv = super.exec(cmds: _*)
-//      Thread.sleep(2000)
-//      rv
-//    }
-//  }
-
   def normalizeNumber(number:String):String = {
     if (number.startsWith("0"))
       "+62" + number.substring(1)

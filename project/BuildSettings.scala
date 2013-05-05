@@ -43,7 +43,7 @@ object BuildSettings {
                 Some("releases" at ansviaRepo + "/content/repositories/releases")
       },
 
-      credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+      credentials += Credentials(Path.userHome / ".ivy2" / ".credentials-ansvia"),
 
       publishArtifact in Test := false,
 
