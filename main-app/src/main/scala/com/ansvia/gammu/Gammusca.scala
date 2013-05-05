@@ -34,11 +34,11 @@ object Gammusca {
 //      StatusPrinter.printInCaseOfErrorsOrWarnings(context)
 
       val daemonSender = new GammuDaemonSender()
-      val daemonPuller = new GammuDaemonFetcher(){
+      val daemonPuller = new GammuDaemonFetcher()/*{
         override def reply(fromNumber: String, str: String) {
           daemonSender.sendSms(fromNumber, str)
         }
-      }
+      }*/
 
 
       daemonPuller.start()
