@@ -1,4 +1,4 @@
-package com.ansvia
+package com.ansvia.gammu
 
 /**
  * Author: robin

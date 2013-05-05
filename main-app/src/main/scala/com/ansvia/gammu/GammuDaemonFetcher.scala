@@ -1,7 +1,7 @@
-package com.ansvia
+package com.ansvia.gammu
 
-import com.ansvia.commons.logging.Slf4jLogger
 import com.redis.RedisClient
+import com.ansvia.commons.logging.Slf4jLogger
 
 /**
  * Author: robin

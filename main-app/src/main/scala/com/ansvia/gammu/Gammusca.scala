@@ -1,7 +1,7 @@
-package com.ansvia
+package com.ansvia.gammu
 
 
-//import com.ansvia.commons.logging.Slf4jLogger
+//import com.ansvia.gammu.commons.logging.Slf4jLogger
 //import ch.qos.logback.core.util.StatusPrinter
 ////import ch.qos.logback.classic.LoggerContext
 ////import ch.qos.logback.classic.joran.JoranConfigurator

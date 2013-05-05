@@ -1,4 +1,4 @@
-package com.ansvia
+package com.ansvia.gammu
 
 import com.ansvia.commons.logging.Slf4jLogger
 

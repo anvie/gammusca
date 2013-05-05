@@ -6,7 +6,7 @@ import Keys._
 object BuildSettings {
 
   lazy val basicSettings = seq(
-    version               := "0.0.1-alpha",
+    version               := "0.0.2-SNAPSHOT",
     homepage              := Some(new URL("http://ansvia.com")),
     organization          := "com.ansvia",
     organizationHomepage  := Some(new URL("http://ansvia.com")),

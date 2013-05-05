@@ -1,4 +1,4 @@
-package com.ansvia
+package com.ansvia.gammu
 
 import scala.util.parsing.json.JSON
 
