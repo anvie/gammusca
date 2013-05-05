@@ -10,8 +10,19 @@ trait GammuSmsWriter extends ShellHelper {
 
   protected val backend:GammuStorageBackend
 
+  var gammuBin = "/usr/bin/gammu"
+
   protected def error(str:String)
   protected def info(str:String)
+
+
+//  override def exec(cmds: String*) = {
+//    synchronized {
+//      val rv = super.exec(cmds: _*)
+//      Thread.sleep(2000)
+//      rv
+//    }
+//  }
 
   def normalizeNumber(number:String):String = {
     if (number.startsWith("0"))
@@ -43,7 +54,7 @@ trait GammuSmsWriter extends ShellHelper {
     validateMsg(nmsg)
 
     try {
-      exec("gammu", "sendsms", "TEXT", nn, "-len", "160", "-text", nmsg)
+      exec(gammuBin, "sendsms", "TEXT", nn, "-len", "160", "-text", nmsg)
     }catch{
       case e:Exception =>
         error("Gagal kirim sms ke: " + phoneNumber + ", pesan: " + nmsg)
