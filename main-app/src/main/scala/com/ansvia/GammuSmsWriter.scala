@@ -10,7 +10,7 @@ trait GammuSmsWriter extends ShellHelper {
 
   protected val backend:GammuStorageBackend
 
-  var gammuBin = "/usr/bin/gammu"
+  var gammuBin:String // = "/usr/bin/gammu"
 
   protected def error(str:String)
   protected def info(str:String)

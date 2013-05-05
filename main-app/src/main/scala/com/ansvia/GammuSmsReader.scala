@@ -11,7 +11,7 @@ import com.ansvia.commons.logging.Slf4jLogger
 trait GammuSmsReader extends ShellHelper with Slf4jLogger {
 
   protected var lastPullSmsCount = 0
-  var gammuBin = "/usr/bin/gammu"
+  var gammuBin:String // = "/usr/bin/gammu"
 
   def pullRaw():String = {
     try {

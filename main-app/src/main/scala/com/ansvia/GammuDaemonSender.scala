@@ -10,6 +10,7 @@ import com.ansvia.commons.logging.Slf4jLogger
  */
 class GammuDaemonSender extends Thread with GammuSmsWriter with Slf4jLogger {
 
+  var gammuBin = "/usr/bin/gammu"
   protected lazy val backend = new GammuRedisStorage("localhost", 6379)
   private var _stop = false
 

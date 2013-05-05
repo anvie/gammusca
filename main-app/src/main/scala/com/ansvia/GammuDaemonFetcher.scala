@@ -11,6 +11,7 @@ import com.redis.RedisClient
  */
 class GammuDaemonFetcher extends Thread with Gammu with Slf4jLogger {
 
+  var gammuBin = "/usr/bin/gammu"
   protected lazy val backend = new GammuRedisStorage("localhost", 6379)
   private var _stop = false
 
