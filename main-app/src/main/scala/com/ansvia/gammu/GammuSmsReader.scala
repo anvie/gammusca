@@ -17,6 +17,9 @@ trait GammuSmsReader extends ShellHelper with Slf4jLogger {
     try {
       exec(gammuBin,"getallsms")
     }catch{
+      case e:java.lang.RuntimeException =>
+        error("execute getallsms error, " + e.getMessage)
+        ""
       case e:Exception =>
         e.printStackTrace()
         println(e.getMessage)
@@ -47,6 +50,9 @@ trait GammuSmsReader extends ShellHelper with Slf4jLogger {
     try {
       exec(gammuBin, "deleteallsms", "1")
     }catch{
+      case e:java.lang.RuntimeException =>
+        error("execute deleteallsms error, " + e.getMessage)
+
       case e:Exception =>
         e.printStackTrace()
         println(e.getMessage)
