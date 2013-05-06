@@ -60,8 +60,6 @@ trait GammuSmsWriter extends ShellHelper {
       case e:Exception =>
         error("Gagal kirim sms ke: " + phoneNumber + ", pesan: " + nmsg)
         e.printStackTrace()
-        // backup sms to draft
-        info("backup last failed `to send sms` into Draft")
 
         val sms = Sms("",phoneNumber,SmsStatus.Unread,"","",nmsg)
 
@@ -72,6 +70,9 @@ trait GammuSmsWriter extends ShellHelper {
           // free memory
           failedSends.remove(sms.hashCode())
         }else{
+          // backup sms to draft
+          info("backup last failed `to send sms` into Draft")
+
           backend.push(sms, Folder.Draft)
           failedCount += 1
           failedSends.update(sms.hashCode(), failedCount)
