@@ -24,12 +24,12 @@ class GammuDaemonSender extends Thread with GammuSmsWriter with Slf4jLogger {
       // get data dari storage lalu
       // kirimkan satu per satu
       backend.pop(Folder.Outbox) map { sms =>
-        info("sending sms to " + sms.toNumber + ", fetched from outbox queue, len: " + sms.message.length)
+        info("sending sms " + sms + ", fetched from outbox queue")
         safeSendSm(sms.toNumber, sms.message)
       }
 
       backend.pop(Folder.Draft) map { sms =>
-        info("sending sms to " + sms.toNumber + ", fetched from draft queue, len: " + sms.message.length)
+        info("sending sms " + sms + ", fetched from draft queue")
         safeSendSm(sms.toNumber, sms.message)
       }
 

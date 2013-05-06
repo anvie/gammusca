@@ -20,6 +20,7 @@
     <logger name="com.ansvia.gammu.GammuDaemonSender" level="INFO" />
     <logger name="com.ansvia.gammu.GammuDaemonFetcher" level="INFO" />
     <logger name="com.redis" level="WARN" />
+    <logger name="com.ansvia.gammu.GammuRedisStorage" level="WARN" />
 
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
