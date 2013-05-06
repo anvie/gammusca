@@ -42,7 +42,7 @@ trait GammuSmsWriter extends ShellHelper {
       throw new Exception("Invalid message, more than 160 characters.")
   }
 
-  private var failedSends = mutable.HashMap.empty[Int, Int]
+  private var failedSends = new mutable.HashMap[Int, Int]() with mutable.SynchronizedMap[Int, Int]
 
   def send(phoneNumber:String, msg:String){
     val nn = normalizeNumber(phoneNumber)
@@ -65,17 +65,17 @@ trait GammuSmsWriter extends ShellHelper {
 
         var failedCount = failedSends.getOrElse(sms.hashCode(), 0)
 
-        if (failedCount > 5){
-          warn("Failed to send sms %s, tried: %d".format(sms, failedCount))
+        if (failedCount > 4){
+          warn("Failed to send sms %s, tried: %d. stop trying.".format(sms, failedCount))
           // free memory
-          failedSends.remove(sms.hashCode())
+          failedSends -= sms.hashCode()
         }else{
           // backup sms to draft
           info("backup last failed `to send sms` into Draft")
 
           backend.push(sms, Folder.Draft)
           failedCount += 1
-          failedSends.update(sms.hashCode(), failedCount)
+          failedSends += sms.hashCode() -> failedCount
         }
     }
   }
