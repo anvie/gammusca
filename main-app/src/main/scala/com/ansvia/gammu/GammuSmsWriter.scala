@@ -1,5 +1,7 @@
 package com.ansvia.gammu
 
+import scala.collection.mutable
+
 /**
  * Author: robin
  * Date: 5/4/13
@@ -14,6 +16,7 @@ trait GammuSmsWriter extends ShellHelper {
 
   protected def error(str:String)
   protected def info(str:String)
+  protected def warn(str:String)
 
 
   def normalizeNumber(number:String):String = {
@@ -39,9 +42,12 @@ trait GammuSmsWriter extends ShellHelper {
       throw new Exception("Invalid message, more than 160 characters.")
   }
 
+  private var failedSends = mutable.HashMap.empty[Int, Int]
+
   def send(phoneNumber:String, msg:String){
     val nn = normalizeNumber(phoneNumber)
     validateNumber(nn)
+
     val nmsg = if (msg.length > 160)
       msg.substring(0, 160).trim
     else
@@ -55,8 +61,21 @@ trait GammuSmsWriter extends ShellHelper {
         error("Gagal kirim sms ke: " + phoneNumber + ", pesan: " + nmsg)
         e.printStackTrace()
         // backup sms to draft
-        info("backup last failed to send sms into Draft")
-        backend.push(Sms("",phoneNumber,SmsStatus.Unread,"","",nmsg), Folder.Draft)
+        info("backup last failed `to send sms` into Draft")
+
+        val sms = Sms("",phoneNumber,SmsStatus.Unread,"","",nmsg)
+
+        var failedCount = failedSends.getOrElse(sms.hashCode(), 0)
+
+        if (failedCount > 5){
+          warn("Failed to send sms %s, tried: %d".format(sms, failedCount))
+          // free memory
+          failedSends.remove(sms.hashCode())
+        }else{
+          backend.push(sms, Folder.Draft)
+          failedCount += 1
+          failedSends.update(sms.hashCode(), failedCount)
+        }
     }
   }
 }

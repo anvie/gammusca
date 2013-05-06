@@ -9,11 +9,12 @@ import com.ansvia.commons.logging.Slf4jLogger
  * Time: 10:38 PM
  *
  */
-class GammuDaemonFetcher extends Thread with Gammu with Slf4jLogger {
+class GammuDaemonFetcher extends Thread with GammuSmsReader with Slf4jLogger {
 
   var gammuBin = "/usr/bin/gammu"
   protected lazy val backend = new GammuRedisStorage("localhost", 6379)
   private var _stop = false
+//  private var smsProcessor:GammuSmsProcessor = _
 
   override def run() {
 
@@ -55,11 +56,14 @@ class GammuDaemonFetcher extends Thread with Gammu with Slf4jLogger {
   def reply(fromNumber:String, str:String){}
 }
 
-
-
-
-
-
-
-
+//trait GammuSmsProcessor {
+//  def process(sms:Sms)
+//}
+//
+//class ReconSmsProcessor extends GammuSmsProcessor {
+//  def process(sms: Sms) {
+//
+//  }
+//}
+//
 
