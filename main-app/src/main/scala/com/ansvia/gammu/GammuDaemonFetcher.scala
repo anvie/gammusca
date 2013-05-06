@@ -22,7 +22,7 @@ class GammuDaemonFetcher extends Thread with GammuSmsReader with Slf4jLogger {
 
     while (!_stop){
 
-      info("reading smses from device...")
+      debug("reading smses from device...")
 
       // dapatkan data dari sim card
       // lalu masukkan ke storage
@@ -34,6 +34,7 @@ class GammuDaemonFetcher extends Thread with GammuSmsReader with Slf4jLogger {
 
       smses foreach { sms =>
         if (sms.status != SmsStatus.Read){ // hanya untuk sms yang belum pernah dibaca.
+          info("got new sms: " + sms)
           backend.push(sms, Folder.Inbox)
           reply(sms.fromNumber,"sms diterima, panjang karakter: " + sms.message.length)
         }
