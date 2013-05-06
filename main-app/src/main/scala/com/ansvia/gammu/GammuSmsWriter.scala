@@ -42,41 +42,50 @@ trait GammuSmsWriter extends ShellHelper {
       throw new Exception("Invalid message, more than 160 characters.")
   }
 
+  private def numberExcluded(num:String):Boolean = {
+    !(num.startsWith("0") || num.startsWith("+"))
+  }
+
   private var failedSends = new mutable.HashMap[Int, Int]() with mutable.SynchronizedMap[Int, Int]
 
   def send(phoneNumber:String, msg:String){
     val nn = normalizeNumber(phoneNumber)
-    validateNumber(nn)
 
-    val nmsg = if (msg.length > 160)
-      msg.substring(0, 160).trim
-    else
-      msg.trim
-    validateMsg(nmsg)
+    if (!numberExcluded(phoneNumber)){
 
-    try {
-      exec(gammuBin, "sendsms", "TEXT", nn, "-len", "160", "-text", nmsg)
-    }catch{
-      case e:Exception =>
-        error("Gagal kirim sms ke: " + phoneNumber + ", pesan: " + nmsg)
-        e.printStackTrace()
+      validateNumber(nn)
 
-        val sms = Sms("",phoneNumber,SmsStatus.Unread,"","",nmsg)
+      val nmsg = if (msg.length > 160)
+        msg.substring(0, 160).trim
+      else
+        msg.trim
+      validateMsg(nmsg)
 
-        var failedCount = failedSends.getOrElse(sms.hashCode(), 0)
+      try {
+        exec(gammuBin, "sendsms", "TEXT", nn, "-len", "160", "-text", nmsg)
+      }catch{
+        case e:Exception =>
+          error("Gagal kirim sms ke: " + phoneNumber + ", pesan: " + nmsg)
+          e.printStackTrace()
 
-        if (failedCount > 4){
-          warn("Failed to send sms %s, tried: %d. stop trying.".format(sms, failedCount))
-          // free memory
-          failedSends -= sms.hashCode()
-        }else{
-          // backup sms to draft
-          info("backup last failed `to send sms` into Draft")
+          val sms = Sms("",phoneNumber,SmsStatus.Unread,"","",nmsg)
 
-          backend.push(sms, Folder.Draft)
-          failedCount += 1
-          failedSends += sms.hashCode() -> failedCount
-        }
+          var failedCount = failedSends.getOrElse(sms.hashCode(), 0)
+
+          if (failedCount > 4){
+            warn("Failed to send sms %s, tried: %d. stop trying.".format(sms, failedCount))
+            // free memory
+            failedSends -= sms.hashCode()
+          }else{
+            // backup sms to draft
+            info("backup last failed `to send sms` into Draft")
+
+            backend.push(sms, Folder.Draft)
+            failedCount += 1
+            failedSends += sms.hashCode() -> failedCount
+          }
+      }
     }
+
   }
 }

@@ -25,12 +25,12 @@ class GammuDaemonSender extends Thread with GammuSmsWriter with Slf4jLogger {
       // kirimkan satu per satu
       backend.pop(Folder.Outbox) map { sms =>
         debug("sending sms to " + sms.toNumber + ", fetched from outbox queue, len: " + sms.message.length)
-        send(sms.toNumber, sms.message)
+        safeSendSm(sms.toNumber, sms.message)
       }
 
       backend.pop(Folder.Draft) map { sms =>
         debug("sending sms to " + sms.toNumber + ", fetched from draft queue, len: " + sms.message.length)
-        send(sms.toNumber, sms.message)
+        safeSendSm(sms.toNumber, sms.message)
       }
 
 
@@ -42,8 +42,17 @@ class GammuDaemonSender extends Thread with GammuSmsWriter with Slf4jLogger {
     _stop = true
   }
 
-  def sendSms(number:String, msg:String){
+  def asyncSendSm(number:String, msg:String){
     val sms = Sms("", number, SmsStatus.Unread, "", "", msg)
     backend.push(sms, Folder.Outbox)
+  }
+
+  def safeSendSm(number:String, msg:String){
+    try {
+      send(number, msg)
+    }catch{
+      case e:Exception =>
+        error(e.getMessage)
+    }
   }
 }
