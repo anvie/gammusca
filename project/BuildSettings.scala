@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 //import com.github.siasia.WebPlugin._
 //import ls.Plugin._
+import com.ansvia.onedir.OneDirPlugin
 
 object BuildSettings {
 
@@ -27,7 +28,7 @@ object BuildSettings {
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
     crossPaths := false,
     publishMavenStyle := true
-  )
+  ) ++ OneDirPlugin.onedirSettings
 
   lazy val noPublishing = seq(
     publish := (),

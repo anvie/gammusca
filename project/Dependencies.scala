@@ -16,6 +16,6 @@ object Dependencies {
 
   val ansviaCommons = "com.ansvia" % "ansvia-commons" % "0.0.6"
   val specs2        = "org.specs2" %%  "specs2" % "1.12.4"
-  val logback       = "ch.qos.logback" % "logback-classic" % "1.0.9"
+  val logback       = "ch.qos.logback" % "logback-classic" % "1.0.13"
   lazy val scalaRedis = "net.debasishg" % "redisclient_2.9.1" % "2.9"
 }
