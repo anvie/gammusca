@@ -15,9 +15,10 @@ dist/gammusca.zip:
 		--exclude=resolution-cache gammusca/target/ /tmp/gammusca
 #	cp etc/run.sh /tmp/gammusca/bin/run
 #	chmod +x /tmp/gammusca/bin/run
+	chmod +x /tmp/gammusca/start.sh
 	cd /tmp && \
 		rm -f gammusca.zip && \
-		zip gammusca.zip gammusca
+		zip -r gammusca.zip gammusca
 	mv /tmp/gammusca.zip $@
 
 
