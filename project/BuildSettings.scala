@@ -7,7 +7,7 @@ import com.ansvia.onedir.OneDirPlugin
 object BuildSettings {
 
   lazy val basicSettings = seq(
-    version               := "0.0.2-SNAPSHOT",
+    version               := "0.0.3-SNAPSHOT",
     homepage              := Some(new URL("http://ansvia.com")),
     organization          := "com.ansvia.gammu",
     organizationHomepage  := Some(new URL("http://ansvia.com")),

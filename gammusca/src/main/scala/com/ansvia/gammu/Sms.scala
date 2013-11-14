@@ -1,6 +1,7 @@
 package com.ansvia.gammu
 
 import scala.util.parsing.json.JSON
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * Author: robin
@@ -17,9 +18,9 @@ case class Sms(fromNumber:String, toNumber:String, status:SmsStatus, sent:String
 
 object Sms {
     def parseText(text:String):Option[Sms] = {
-        var ar = List.empty[String]
+        var ar = new ArrayBuffer[String]
         val sd = text.split("\n")
-        sd slice (0, 6) foreach { line =>
+        sd slice (0, 7) foreach { line =>
             val d = line.split(":")
             if (d.length > 1){
                 if (d.length > 2){
@@ -46,13 +47,18 @@ object Sms {
                 messages +:= t + " "
             }
         }
-        val message = messages.reduceLeftOption(_ + _).getOrElse("").trim
+        val message = messages.mkString("").trim
         //    println(ar)
-        val status = ar(4) match {
-            case "UnRead" => SmsStatus.Unread
-            case "Read" => SmsStatus.Read
+        val far = ar.result().toIndexedSeq
+//        println(far.mkString("\n"))
+        val status = {
+            val idx = far.length - 1
+            far(idx) match {
+                case "UnRead" => SmsStatus.Unread
+                case "Read" => SmsStatus.Read
+            }
         }
-        Some(Sms(ar(3), "", status, ar(1), ar(0), message))
+        Some(Sms(far(3), "", status, far(1), far(0), message))
     }
     def parseJson(text:String):Option[Sms] = {
         val result = JSON.parseFull(text)
