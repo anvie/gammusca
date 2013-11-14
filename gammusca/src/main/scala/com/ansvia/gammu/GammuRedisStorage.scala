@@ -16,18 +16,15 @@ class GammuRedisStorage(host:String, port:Int) extends GammuStorageBackend with 
     def isExists(sms:Sms, folder:Folder):Boolean = {
         folder match {
             case Folder.Inbox =>
-                rc.lrange('gammu_inbox, 0, -1).map { lst =>
-                    lst.contains(Some(sms.toJson))
-                }.getOrElse(false)
+                rc.lrange('gammu_inbox, 0, -1).exists(lst =>
+                    lst.contains(Some(sms.toJson)))
 
             case Folder.Outbox =>
-                rc.lrange('gammu_outbox, 0, -1).map { lst =>
-                    lst.contains(Some(sms.toJson))
-                }.getOrElse(false)
+                rc.lrange('gammu_outbox, 0, -1).exists(lst =>
+                    lst.contains(Some(sms.toJson)))
             case Folder.Draft =>
-                rc.lrange('gammu_draft, 0, -1).map { lst =>
-                    lst.contains(Some(sms.toJson))
-                }.getOrElse(false)
+                rc.lrange('gammu_draft, 0, -1).exists(lst =>
+                    lst.contains(Some(sms.toJson)))
         }
     }
 
