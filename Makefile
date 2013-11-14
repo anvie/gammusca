@@ -6,12 +6,15 @@ TARGETS=\
 
 
 dist/gammusca.zip:
-	sbt proguard
+	make clean
+	mkdir -p dist
+	sbt onedir
 	rm -rf /tmp/gammusca
-	mkdir -p /tmp/gammusca/bin
-	cp target/class/gammusca-$(VERSION).min.jar /tmp/gammusca/
-	cp etc/run.sh /tmp/gammusca/bin/run
-	chmod +x /tmp/gammusca/bin/run
+#	mkdir -p /tmp/gammusca/bin
+	rsync -avzrhP --exclude=cache --exclude=.history --exclude=streams \
+		--exclude=resolution-cache gammusca/target/ /tmp/gammusca
+#	cp etc/run.sh /tmp/gammusca/bin/run
+#	chmod +x /tmp/gammusca/bin/run
 	cd /tmp && \
 		rm -f gammusca.zip && \
 		zip gammusca.zip gammusca
