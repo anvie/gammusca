@@ -1,4 +1,4 @@
-package com.ansvia
+package com.ansvia.gammu
 
 import org.specs2.Specification
 
@@ -36,6 +36,7 @@ class SmsSpec extends Specification {
       """
         |{
         |"fromNumber": "+6285717997711",
+        |"toNumber": "",
         |"status": "Unread",
         |"sent": "Sat 04 May 2013 07:13:16 PM  +0700",
         |"smsc": "+62816124",
@@ -44,17 +45,17 @@ class SmsSpec extends Specification {
       """.stripMargin
 
     def parseText = {
-      val s = Sms("+6285717997711", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
-      Sms.parseText(text) must beEqualTo(s)
+      val s = Sms("+6285717997711", "", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
+      Sms.parseText(text) must beEqualTo(Some(s))
     }
 
     def parseJson = {
-      val s = Sms("+6285717997711", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
+      val s = Sms("+6285717997711", "", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700", "+62816124", "1 200, 2 350, 3 105,rusak 10")
       Sms.parseJson(jsonText) must beEqualTo(Some(s))
     }
 
     def toJson = {
-      val s = Sms("+6285717997711", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700",
+      val s = Sms("+6285717997711", "", SmsStatus.Unread, "Sat 04 May 2013 07:13:16 PM  +0700",
         "+62816124", "1 200, 2 350, 3 105,rusak 10").toJson
       s must beEqualTo(jsonText.trim)
     }

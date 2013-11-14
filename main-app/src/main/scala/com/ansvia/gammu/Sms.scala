@@ -80,10 +80,10 @@ object Sms {
       |"smsc": "%s",
       |"message": "%s"
       |}
-    """.stripMargin.format(sms.fromNumber, sms.toNumber, (sms.status match {
+    """.stripMargin.format(sms.fromNumber, sms.toNumber, sms.status match {
       case SmsStatus.Read => "Read"
       case SmsStatus.Unread => "Unread"
-    }),sms.sent, sms.smsc, sms.message).trim
+    },sms.sent, sms.smsc, sms.message).trim
   }
 }
 
