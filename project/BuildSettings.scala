@@ -22,12 +22,12 @@ object BuildSettings {
 
   lazy val moduleSettings = basicSettings ++ seq(
     // scaladoc settings
-    (scalacOptions in doc) <++= (name, version).map { (n, v) => Seq("-doc-title", n, "-doc-version", v) },
+    (scalacOptions in doc) <++= (name, version).map { (n, v) => Seq("-doc-title", n, "-doc-version", v) }//,
 
     // publishing
-    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
-    crossPaths := false,
-    publishMavenStyle := true
+    //credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+    //crossPaths := true,
+    //publishMavenStyle := false
   ) ++ OneDirPlugin.onedirSettings
 
   lazy val noPublishing = seq(
@@ -50,7 +50,7 @@ object BuildSettings {
 
       pomIncludeRepository := { _ => false },
 
-      crossPaths := false,
+      crossPaths := true,
 
       pomExtra := (
           <url>http://www.ansvia.com</url>
