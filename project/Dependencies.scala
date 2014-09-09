@@ -15,8 +15,8 @@ object Dependencies {
   def runtime   (deps: ModuleID*): Seq[ModuleID] = deps map (_ % "runtime")
   def container (deps: ModuleID*): Seq[ModuleID] = deps map (_ % "container")
 
-  val ansviaCommons = "com.ansvia" % "ansvia-commons" % "0.0.9-20131114-SNAPSHOT"
-  val specs2        = "org.specs2" %%  "specs2" % "1.12.4"
+  val ansviaCommons = "com.ansvia" % "ansvia-commons" % "0.1.9"
+  val specs2        = "org.specs2" %%  "specs2" % "2.4"
   val logback       = "ch.qos.logback" % "logback-classic" % "1.0.13"
-  lazy val scalaRedis = "net.debasishg" % "redisclient_2.9.1" % "2.9"
+  lazy val scalaRedis = "net.debasishg" %% "redisclient" % "2.12"
 }

@@ -14,7 +14,7 @@ object BuildSettings {
     description           := "",
     startYear             := Some(2012),
     licenses              := Seq("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-    scalaVersion          := "2.9.2",
+    scalaVersion          := "2.10.4",
     resolvers             ++= Dependencies.resolutionRepos,
     scalacOptions         := Seq("-deprecation", "-encoding", "utf8"),
     description           := "Gammu SMS Daemon using Scala"
