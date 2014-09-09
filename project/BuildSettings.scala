@@ -48,6 +48,8 @@ object BuildSettings {
 
       publishArtifact in Test := false,
 
+      publishMavenStyle := true,
+
       pomIncludeRepository := { _ => false },
 
       crossPaths := true,
